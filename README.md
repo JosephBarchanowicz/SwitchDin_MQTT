@@ -23,7 +23,8 @@ Figure 2: Output of client2.py and mosquitto mqtt subscription to topic "Average
 
 The client3.py file is subscribed to the topic "Averages" and prints these statistical valuse out in a pretty tabular table layout on the console.
 
-![Client3](images/client3.png)
+![Client3](images/client3.png)  
+
 Figure 2: Output of client3.py table of averages
 
 # The supporting files
