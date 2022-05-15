@@ -9,7 +9,7 @@ class OneMinute:
 
     def __init__(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=10)
+        self.next_period = datetime.now() + timedelta(minutes=1)
 
     def add_value(self, num):
         self.num.append(num)
@@ -23,14 +23,14 @@ class OneMinute:
 
     def reset(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=10)
+        self.next_period = datetime.now() + timedelta(minutes=1)
 
 
 class FiveMinute:
 
     def __init__(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=15)
+        self.next_period = datetime.now() + timedelta(minutes=5)
 
     def add_value(self, num):
         self.num.append(num)
@@ -44,14 +44,14 @@ class FiveMinute:
 
     def reset(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=15)
+        self.next_period = datetime.now() + timedelta(minutes=5)
 
 
 class ThirtyMinute:
 
     def __init__(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=30)
+        self.next_period = datetime.now() + timedelta(minutes=30)
 
     def add_value(self, num):
         self.num.append(num)
@@ -65,5 +65,5 @@ class ThirtyMinute:
 
     def reset(self):
         self.num = []
-        self.next_period = datetime.now() + timedelta(seconds=30)
+        self.next_period = datetime.now() + timedelta(minutes=30)
 
