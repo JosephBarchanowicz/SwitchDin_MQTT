@@ -1,49 +1,62 @@
 # SwitchDin_MQTT
 Skills Assessment
 
-## Client1.py
+# The client applications  
 
-##### 1. Write a random number gernerator in python that publishes a random number between 1 and 100 to an MQTT topic in a message broker on a random interval between 1 and 30 seconds.  
+The client applications are used to subscribe and publish to MQTT using the paho library found at https://pypi.org/project/paho-mqtt/.
 
-* The file mqtt.publish1.py covers this first task.  This file creates a client, Client1, and connects to a broker to publish a random value at a random time to the topic "RANDOM_VAL". This files uses the functions from random_numbers.py to create both the random number and random timer. 
+## client1.py
 
-##### 2. Stand up a simple MQTT message broker.  
+The client1.py file is used to publish a random number between 1 and 100 to the MQTT topic "Random_Value" at a random time interval between 1 and 30 seconds. Figure 1 shows the output of client1.py(left) and the output of a mosquitto subscription to topic "Random_Values" (right). 
 
-* To stand up a simple MQTT message broker I used "mqtt.eclipseprojects.io".  I do not think this was the best solution and will need to be changed to a more permenant self-hosting solution before deployment.  
+![Client1](images/client1.png)
+Figure 1: Output of client1.py and mosquitto mqtt subscription to topic "Random_Values"
 
-##### 3. A second python application that subscribes to the above message, reads the random number from the broker, and calculates one minute, 5 minute, and 30 minute averages.  These should then be sent back to the broker on a different topic.  
+## client2.py
 
-* The file mqtt.subscribe2.py creates a client, Client2, and subscribes it to the topic "RANDOM_VAL" and receives the random value from Client1.  The file mqtt.publish2.py creates a new topic "AVERAGE" for Client2, where it takes the random value received from its subscribed topic. It then uses the classes from averages.py to produce the average of the random value every minute, five minutes, and thirty minutes and publishes them to the topic "AVERAGE".  
+The client2.py file is subscribed to the topic "Random_Number", reads the random number from the broker, and calculates the averages of the random input at 1 minute, 5 minute and thirty-minute time intervals. If any of the time intervals update it then publishes the updated results to "Averages" topic.  Figure 2 shows the output of client2.py(left) and the output of a mosquitto subscription to topic "Averages" (right). 
 
-##### 4. A third python application that subscribes to the statistics calculated in point 3, and prints these out in a pretty tabular layout. 
+![Client2](images/client2.png)
+Figure 2: Output of client2.py and mosquitto mqtt subscription to topic "Averages"
 
-* The file mqtt.subscribe3.py creats a client, Client3, and subscribes it to the topic "AVERAGE" and receives the average values from Client2. The file mqtt.publish3.py then takes the values received from the "AVERAGE" topic and prints them in a pretty tabular layout. It uses the functions from tables.py which in return uses the prettytable library.   
+## client3.py
 
-### How the application should be ran
+The client3.py file is subscribed to the topic "Averages" and prints these statistical valuse out in a pretty tabular table layout on the console.
 
-The applications need to be ran in order as to produce the 1) random number, 2) average values list, 3) print the table. The order the applications need to be ran are as follows:
+![Client3](images/client3.png)
+Figure 2: Output of client3.py table of averages
 
-1) mqtt_publish1.py
-2) mqtt_subscribe2.py
-3) mqtt_publish2.py
-4) mqtt_subscribe3.py
-5) mqtt_publish3.py
+# The supporting files
+
+### random_numbers.py
+
+random_numbers.py has the functions used to generate the random values as well as the random time.
+
+### averages.py
+
+The averages.py file holds the classes that are used to compute the 1, 5, and 30 minute averages. 
+
+### tables.py
+
+The tables file uses the pretty table library to create the table used by client3 to publish the final results shown in figure 3. The pretty table library can be found at https://pypi.org/project/pretty-tables/.
+
+# Running the application
+
+For the applications to produce the 1) random number, 2) average values list, 3) print the table. The order the applications need to be ran are as follows:
+
+1) client3.py
+2) client2.py
+3) client1.py
+
+The reason that the application needs to be ran in this order is if a broker receives a published message to a topic and no one has subscribed to it then the broker discards the message.  Because, client3 is subscribed to "Averages" and that topic is published by client2, and client2 is subsribed to "Random_Value" and that topic is published by client2.  If the applications are ran in a different order then there is risk of missing data points. 
 
 * note mqtt_publish2.py will publish 0 for each of the average values until the appropriate time frame is reached, then will update the values each time frame is reached after the initial timeframe.   
 
-### Changes needed before implementation 
+# Changes needed before implementation 
 
-1) Change the broker from "mqtt.eclipseprojects.io" to a self-hosting broker in the following files:
-* mqtt_publish1.py
-* mqtt_subscribe2.py
-* mqtt_publish2.py
-* mqtt_subscribe3.py
-* mqtt_publish3.py
+1) The current broker for each of the clients are localhost, need to update to a proper ip address.  
+2) Currently if client2 loses connection then the averages will start from [0,0,0]. Need to come up with a proper way to queue published messages from client1, because if no clients have subscribed to the topic or they aren’t currently connected, then the message is removed from the broker. We can add the retain messages flag but this will only work for one missed message. 
 
-2) mqtt_publish3.py is currently only printing to the console, if need to publish to broker then need to change and add a new topic.
-3) Remove main.py, this is only a test driver to test the classes and functions used in the publish files. 
-
-
-
-
-
+# Libraries needed for project
+1) Paho MQTT: https://pypi.org/project/paho-mqtt/
+2) Pretty Tables: https://pypi.org/project/pretty-tables/.
